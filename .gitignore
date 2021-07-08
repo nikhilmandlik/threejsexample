@@ -1,0 +1,15 @@
+
+# Build output
+target
+dist
+
+# Mac OS X Finder
+.DS_Store
+
+# Node, Bower dependencies
+node_modules
+
+# Protractor logs
+protractor/logs
+
+package-lock.json

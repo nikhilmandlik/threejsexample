@@ -1,20 +1,24 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 export function modelLoader(model) {
     const canvas = document.querySelector("#c");
     const renderer = new THREE.WebGLRenderer({ canvas });
+    renderer.xr.enabled = true;
+    document.body.appendChild( VRButton.createButton( renderer ) );
 
     const fov = 45;
     const aspect = 2; // the canvas default
     const near = 0.1;
     const far = 100;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(0, 10, 20);
+    // camera.position.set(0, 10, 20);
+    camera.position.set(0, 0.05, 0.15);
 
     const controls = new OrbitControls(camera, canvas);
-    controls.target.set(0, 5, 0);
+    // controls.target.set(0, 2, 0);
     controls.update();
 
     const scene = new THREE.Scene();
@@ -114,11 +118,11 @@ export function modelLoader(model) {
             const boxCenter = box.getCenter(new THREE.Vector3());
 
             // set the camera to frame the box
-            frameArea(boxSize * 0.5, boxSize, boxCenter, camera);
+            // frameArea(boxSize * 0.5, boxSize, boxCenter, camera);
 
             // update the Trackball controls to handle the new size
-            controls.maxDistance = boxSize * 10;
-            controls.target.copy(boxCenter);
+            // controls.maxDistance = boxSize * 10;
+            // controls.target.copy(boxCenter);
             controls.update();
         });
     }
@@ -138,13 +142,17 @@ export function modelLoader(model) {
         if (resizeRendererToDisplaySize(renderer)) {
             const canvas = renderer.domElement;
             camera.aspect = canvas.clientWidth / canvas.clientHeight;
-            camera.updateProjectionMatrix();
+            // camera.updateProjectionMatrix();
         }
 
         renderer.render(scene, camera);
 
-        requestAnimationFrame(render);
+        renderer.setAnimationLoop( function () {
+            renderer.render( scene, camera );
+        } );
     }
 
-    requestAnimationFrame(render);
+    renderer.setAnimationLoop( function () {
+        renderer.render( scene, camera );
+    } );
 }

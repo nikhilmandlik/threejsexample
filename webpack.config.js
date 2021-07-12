@@ -9,6 +9,9 @@ module.exports = {
         path: path.join(__dirname, "/dist"),
         filename: "bundle.js",
     },
+    devServer: {
+        https: true,
+    },
     module: {
         rules: [
             {
@@ -26,12 +29,12 @@ module.exports = {
             {
                 test: /\.(bin|png|jpe?g|gif)$/i,
                 use: [
-                  {
-                    loader: 'file-loader',
-                    options: {}
-                  }
+                    {
+                        loader: 'file-loader',
+                        options: {}
+                    }
                 ]
-              }
+            }
         ],
     },
 };

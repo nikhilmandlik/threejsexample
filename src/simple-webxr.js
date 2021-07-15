@@ -8,6 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x999999);
 const canvas = document.querySelector("#container");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.xr.enabled = true;

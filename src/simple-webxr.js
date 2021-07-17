@@ -46,50 +46,88 @@ const controls = new OrbitControls(camera, canvas);
 const gltfLoader = new GLTFLoader();
 
 let ahivadh;
-gltfLoader.load(Ahivadh, (gltf) => {
-    ahivadh = gltf.scene;
-    ahivadh.name = 'ahivadh';
-    ahivadh.scale.set(50,50,50);
-    ahivadh.position.z = -2;
-    ahivadh.position.y = 1.5;
 
-    camera.position.set(0, 0, 6);
-    controls.target.set(0, 0, -2);
-    controls.update();
+const loading = document.createElement('div');
+loading.classList.add('loading-text');
+loading.textContent = 'Loading Model...';
 
-    scene.add(ahivadh);
-});
+gltfLoader.load(Ahivadh,
+    (gltf) => {
+        loading.remove();
+        ahivadh = gltf.scene;
+        ahivadh.name = 'ahivadh';
+        ahivadh.scale.set(50,50,50);
+        ahivadh.position.z = -2;
+        ahivadh.position.y = 1.5;
+
+        camera.position.set(0, 0, 6);
+        controls.target.set(0, 0, -2);
+        controls.update();
+
+        scene.add(ahivadh);
+    },
+    (xhr) => {
+        document.body.append(loading);
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    (error) => {
+        loading.remove();
+        console.log('An error happened');
+    }
+);
 
 // let croc;
-// gltfLoader.load(Croc, (gltf) => {
-//     croc = gltf.scene;
-//     croc.name = 'croc';
-//     croc.scale.set(5,5,5);
-//     croc.position.z = -3;
-//     croc.position.y = 0.2;
+// gltfLoader.load(Croc,
+//     (gltf) => {
+//         loading.remove();
+//         croc = gltf.scene;
+//         croc.name = 'croc';
+//         croc.scale.set(5,5,5);
+//         croc.position.z = -3;
+//         croc.position.y = 0.2;
 
-//     camera.position.set(0, 2, 3);
-//     controls.target.set(0, 1, -3);
-//     controls.update();
+//         camera.position.set(0, 2, 3);
+//         controls.target.set(0, 1, -3);
+//         controls.update();
 
-//     scene.add(croc);
-// });
+//         scene.add(croc);
+//     },
+//     (xhr) => {
+//         document.body.append(loading);
+//         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+//     },
+//     (error) => {
+//         loading.remove();
+//         console.log('An error happened');
+//     }
+// );
 
 // let narasimha;
-// gltfLoader.load(Narasimha, (gltf) => {
-//     const scale = 6;
-//     narasimha = gltf.scene;
-//     narasimha.name = 'narasimha';
-//     narasimha.scale.set(scale,scale,scale);
-//     narasimha.position.z = -1;
-//     narasimha.position.y = -1;
+// gltfLoader.load(Narasimha,
+//     (gltf) => {
+//         loading.remove();
+//         const scale = 6;
+//         narasimha = gltf.scene;
+//         narasimha.name = 'narasimha';
+//         narasimha.scale.set(scale,scale,scale);
+//         narasimha.position.z = -1;
+//         narasimha.position.y = -1;
 
-//     camera.position.set(0, 2, 3);
-//     controls.target.set(0, 0.5, -1);
-//     controls.update();
+//         camera.position.set(0, 2, 3);
+//         controls.target.set(0, 0.5, -1);
+//         controls.update();
 
-//     scene.add(narasimha);
-// });
+//         scene.add(narasimha);
+//     },
+//     (xhr) => {
+//         document.body.append(loading);
+//         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+//     },
+//     (error) => {
+//         loading.remove();
+//         console.log('An error happened');
+//     }
+// );
 
 // Show VR controllers
 const controller1 = renderer.xr.getController(0);

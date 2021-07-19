@@ -1,158 +1,178 @@
-import * as THREE from "three";
+import * as THREE from 'three';
+import Ahivadh from "./models/gltf/Ahivadh/Ahivadh.gltf";
+import Croc from "./models/gltf/Croc/croc.gltf";
+import Narasimha from "./models/gltf/narasimha/narasimha.gltf";
+
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
-export function modelLoader(model) {
-    const canvas = document.querySelector("#c");
-    const renderer = new THREE.WebGLRenderer({ canvas });
-    renderer.xr.enabled = true;
-    document.body.appendChild( VRButton.createButton( renderer ) );
-
-    const fov = 45;
-    const aspect = 2; // the canvas default
-    const near = 0.1;
-    const far = 100;
-    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    // camera.position.set(0, 10, 20);
-    camera.position.set(0, 0.05, 0.15);
-
-    const controls = new OrbitControls(camera, canvas);
-    // controls.target.set(0, 2, 0);
-    controls.update();
-
+export function modelLoader(modelName) {
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("black");
+    scene.background = new THREE.Color(0x999999);
+    const canvas = document.querySelector("#container");
 
-    {
-        const planeSize = 50;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.xr.enabled = true;
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load(
-            "https://threejsfundamentals.org/threejs/resources/images/checker.png"
+    const VrButton = document.querySelector('#VRButton');
+    if (VrButton) {
+        VrButton.remove();
+    }
+
+    document.body.appendChild(VRButton.createButton(renderer));
+
+    // Lights
+    // HemisphereLight
+    const skyColor = 0xb1e1ff; // light blue
+    const groundColor = 0xb97a20; // brownish orange
+    const intensity = 1;
+    const hemisphereLight = new THREE.HemisphereLight(
+        skyColor,
+        groundColor,
+        intensity
+    );
+    scene.add(hemisphereLight);
+
+    // PointLight
+    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+    pointLight.position.set(5, 10, -5);
+    scene.add(pointLight);
+
+    // Add Camera
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    // OrbitControls for non VR mode
+    const controls = new OrbitControls(camera, canvas);
+
+    const loading = document.createElement('div');
+    loading.classList.add('loading-text');
+    loading.textContent = 'Loading Model...';
+    document.body.append(loading);
+
+    // Load Models using GLTFLoader
+    const gltfLoader = new GLTFLoader();
+
+    let model;
+    if (modelName === 'ahivadh') {
+        gltfLoader.load(Ahivadh,
+            (gltf) => {
+                loading.remove();
+
+                model = gltf.scene;
+                model.name = 'model';
+                model.scale.set(50,50,50);
+                model.position.z = -2;
+                model.position.y = 1.5;
+        
+                camera.position.set(0, 0, 6);
+                controls.target.set(0, 0, -2);
+                controls.update();
+
+                scene.add(model);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                loading.remove();
+                console.log('An error happened');
+            }
         );
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.magFilter = THREE.NearestFilter;
-        const repeats = planeSize / 2;
-        texture.repeat.set(repeats, repeats);
-
-        const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-        const planeMat = new THREE.MeshPhongMaterial({
-            map: texture,
-            side: THREE.DoubleSide,
-        });
-        const mesh = new THREE.Mesh(planeGeo, planeMat);
-        mesh.rotation.x = Math.PI * -0.5;
-        mesh.position.y = -0.065;
-
-        scene.add(mesh);
     }
 
-    {
-        const skyColor = 0xb1e1ff; // light blue
-        const groundColor = 0xb97a20; // brownish orange
-        const intensity = 1;
-        const light = new THREE.HemisphereLight(
-            skyColor,
-            groundColor,
-            intensity
+
+    if (modelName === 'croc') {
+        gltfLoader.load(Croc,
+            (gltf) => {
+                loading.remove();
+
+                model = gltf.scene;
+                model.name = 'model';
+                model.scale.set(5,5,5);
+                model.position.z = -3;
+                model.position.y = 0.2;
+
+                camera.position.set(0, 2, 3);
+                controls.target.set(0, 1, -3);
+                controls.update();
+
+                scene.add(model);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                loading.remove();
+                console.log('An error happened');
+            }
         );
-
-        scene.add(light);
     }
 
-    {
-        const light = new THREE.PointLight(0xffffff, 1, 100);
-        light.position.set(5, 10, -5);
+    if (modelName === 'narasimha') {
+        gltfLoader.load(Narasimha,
+            (gltf) => {
+                loading.remove();
 
-        scene.add(light);
+                const scale = 6;
+                model = gltf.scene;
+                model.name = 'model';
+                model.scale.set(scale,scale,scale);
+                model.position.z = -1;
+                model.position.y = -1;
+
+                camera.position.set(0, 2, 3);
+                controls.target.set(0, 0.5, -1);
+                controls.update();
+
+                scene.add(model);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                loading.remove();
+                console.log('An error happened');
+            }
+        );
     }
 
-    {
-        const color = 0xffffff;
-        const intensity = 1;
-        const light = new THREE.DirectionalLight(color, intensity);
-        light.position.set(5, 10, 5);
-        scene.add(light);
-        // scene.add(light.target);
-    }
+    // Show VR controllers
+    const controller1 = renderer.xr.getController(0);
+    controller1.addEventListener('selectstart', onSelectStart);
+    // controller1.addEventListener('selectend', onSelectEnd);
+    scene.add(controller1);
 
-    function frameArea(sizeToFitOnScreen, boxSize, boxCenter, camera) {
-        const halfSizeToFitOnScreen = sizeToFitOnScreen * 0.5;
-        const halfFovY = THREE.MathUtils.degToRad(camera.fov * 0.5);
-        const distance = halfSizeToFitOnScreen / Math.tan(halfFovY);
-        // compute a unit vector that points in the direction the camera is now
-        // in the xz plane from the center of the box
-        const direction = new THREE.Vector3()
-            .subVectors(camera.position, boxCenter)
-            .multiply(new THREE.Vector3(1, 0, 1))
-            .normalize();
+    const controller2 = renderer.xr.getController(1);
+    controller2.addEventListener('selectstart', onSelectStart);
+    // controller2.addEventListener('selectend', onSelectEnd);
+    scene.add(controller2);
 
-        // move the camera to a position distance units way from the center
-        // in whatever direction the camera was from the center already
-        camera.position.copy(direction.multiplyScalar(distance).add(boxCenter));
+    const controllerModelFactory = new XRControllerModelFactory();
 
-        // pick some near and far values for the frustum that
-        // will contain the box.
-        camera.near = boxSize / 100;
-        camera.far = boxSize * 100;
+    const controllerGrip1 = renderer.xr.getControllerGrip(0);
+    controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+    scene.add(controllerGrip1);
 
-        camera.updateProjectionMatrix();
+    const controllerGrip2 = renderer.xr.getControllerGrip(1);
+    controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+    scene.add(controllerGrip2);
 
-        // point the camera to look at the center of the box
-        camera.lookAt(boxCenter.x, boxCenter.y, boxCenter.z);
-    }
-
-    {
-        const gltfLoader = new GLTFLoader();
-        gltfLoader.load(model, (gltf) => {
-            const root = gltf.scene;
-            scene.add(root);
-
-            // compute the box that contains all the stuff
-            // from root and below
-            const box = new THREE.Box3().setFromObject(root);
-
-            const boxSize = box.getSize(new THREE.Vector3()).length();
-            const boxCenter = box.getCenter(new THREE.Vector3());
-
-            // set the camera to frame the box
-            // frameArea(boxSize * 0.5, boxSize, boxCenter, camera);
-
-            // update the Trackball controls to handle the new size
-            // controls.maxDistance = boxSize * 10;
-            // controls.target.copy(boxCenter);
-            controls.update();
-        });
-    }
-
-    function resizeRendererToDisplaySize(renderer) {
-        const canvas = renderer.domElement;
-        const width = canvas.clientWidth;
-        const height = canvas.clientHeight;
-        const needResize = canvas.width !== width || canvas.height !== height;
-        if (needResize) {
-            renderer.setSize(width, height, false);
-        }
-        return needResize;
-    }
-
-    function render() {
-        if (resizeRendererToDisplaySize(renderer)) {
-            const canvas = renderer.domElement;
-            camera.aspect = canvas.clientWidth / canvas.clientHeight;
-            // camera.updateProjectionMatrix();
+    // Animate
+    renderer.setAnimationLoop(function () {
+        const model = scene.getObjectByName('model');
+        if (model && play) {
+            model.rotation.y += 0.002;
         }
 
         renderer.render(scene, camera);
+    });
+}
 
-        renderer.setAnimationLoop( function () {
-            renderer.render( scene, camera );
-        } );
-    }
-
-    renderer.setAnimationLoop( function () {
-        renderer.render( scene, camera );
-    } );
+let play = true;
+function onSelectStart(event) {
+    play = !play;
 }

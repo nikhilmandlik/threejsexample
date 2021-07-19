@@ -7,7 +7,43 @@
 </head>
 
 <body>
-  <canvas id="container"></canvas>
+  <div class="main-menu">
+    <div class="title">
+      3D Model Viewer / VR Support
+    </div>
+    <div class="menu">
+      <div data-name="ahivadh" class="menu-item ahivadh">
+        <span class="model-name">Ahivadh</span>
+        <img src="./assets/ahivadh.png">
+      </div>
+      <div data-name="croc" class="menu-item croc">
+        <span class="model-name">Croc</span>
+        <img src="./assets/croc.png">
+      </div>
+      <div data-name="narasimha" class="menu-item narasimha">
+        <span class="model-name">Narasimha</span>
+        <img src="./assets/narasimha.png">
+      </div>
+    </div>
+  </div>
+
+  <div class="model-viewer">
+    <div class="toolbar">
+      <div class="back-button">
+        <img src="./assets/back-button.svg">
+        <span>All Models</span>
+      </div>
+      <div class="model-title">
+        <span>Title</span>
+      </div>
+      <div>
+        <span></span>
+      </div>
+    </div>
+
+    <canvas id="container"></canvas>
+  </div>
+
   <script type="text/javascript" src="bundle.js"></script>
 </body>
 

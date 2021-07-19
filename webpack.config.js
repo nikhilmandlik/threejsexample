@@ -1,4 +1,6 @@
 const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
+
 
 module.exports = {
     entry: {
@@ -12,6 +14,16 @@ module.exports = {
     devServer: {
         https: true,
     },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.join(__dirname, "/src/assets"),
+                    to: path.join(__dirname, "/dist/assets")
+                },
+            ],
+        }),
+    ],
     module: {
         rules: [
             {
@@ -31,10 +43,13 @@ module.exports = {
                 use: [
                     {
                         loader: 'file-loader',
-                        options: {}
+                        options: {
+                            name: '[path][name].[ext]',
+                            esModule: false
+                        }
                     }
                 ]
-            }
+            },
         ],
     },
 };

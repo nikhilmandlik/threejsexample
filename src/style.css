@@ -1,8 +1,117 @@
 body {
-    background-color: black;
+    margin: 0;
+    background-color: #999999;
+    font-family: fantasy;
 }
 
-#c {
+.back-button {
+    cursor: pointer;
+    display: flex;
+    line-height: 50px;
+    font-size: 25px;
+}
+
+.model-title, .model-name {
+    display: block;
+    text-align: center;
+    line-height: 50px;
+    font-size: 25px;
+    color: #ffffff;
+    text-transform: capitalize;
+}
+
+.model-name {
+    border-bottom: 1px solid #636363;
+}
+
+#container {
     width: 100%;
     height: 100%;
+}
+
+.main-menu {
+    width: 100%;
+    display: block;
+    text-align: center;
+    font-size: 50px;
+    margin-top: 20px;
+}
+
+.main-menu .title {
+    border-bottom: 1px solid #636363;
+}
+
+.menu {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+}
+
+.menu-item {
+    cursor: pointer;
+    flex: 31.5%;
+    flex: 31.5%;
+    padding: 0 4px;
+    border: 1px solid #636363;
+    border-radius: 14px;
+    margin: 4px;
+}
+
+.menu-item:hover {
+    box-shadow: 2px 2px 8px 1px black;
+}
+
+.menu-item img {
+    vertical-align: middle;
+    width: 100%;
+}
+
+.menu-item .model-title {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+}
+
+.hide {
+    display: none;
+}
+
+.loading-text {
+    color: #ffffff;
+    font-size: xxx-large;
+    left: 50%;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.toolbar {
+    background-color: #999999;
+    border-bottom: 1px solid #636363;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+    .menu-item {
+        -ms-flex: 100%;
+        flex: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+
+@media only screen and (max-width: 600px) {
+    .menu-item {
+        -ms-flex: 100%;
+        flex: 100%;
+        max-width: 100%;
+    }
 }

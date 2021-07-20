@@ -1,40 +1,54 @@
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require('path');
 
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: {
-        three: "./src",
+        three: './src/index.js',
     },
-    mode: "development",
+    mode: 'development',
     output: {
-        path: path.join(__dirname, "/dist"),
-        filename: "bundle.js",
+        path: path.join(__dirname, '/dist'),
+        filename: 'bundle.js',
     },
     devServer: {
         https: true,
     },
     plugins: [
-        new CopyPlugin({
-            patterns: [
-                {
-                    from: path.join(__dirname, "/src/assets"),
-                    to: path.join(__dirname, "/dist/assets")
-                },
-            ],
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'index.html'),
+            title: 'My App',
+            filename: 'index.html'
         }),
+        new CopyPlugin(
+            [
+                {
+                    from: path.join(__dirname, '/src/assets'),
+                    to: path.join(__dirname, '/dist/assets')
+                }
+            ]
+        ),
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+            chunkFilename: '[name].css'
+        })
     ],
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: ["style-loader", "css-loader"],
+                test: /\.(sc|sa|c)ss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader'],
             },
             {
                 test: /\.(gltf)$/,
                 use: [
                     {
-                        loader: "gltf-webpack-loader",
+                        loader: 'gltf-webpack-loader',
+                        options: {
+                            name: '[name].[ext]'
+                        }
                     },
                 ],
             },
@@ -44,12 +58,11 @@ module.exports = {
                     {
                         loader: 'file-loader',
                         options: {
-                            name: '[path][name].[ext]',
-                            esModule: false
+                            name: '[name].[ext]'
                         }
                     }
                 ]
-            },
+            }
         ],
     },
 };

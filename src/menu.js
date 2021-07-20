@@ -1,4 +1,9 @@
 import { modelLoader } from './model-loader';
+
+import croc from './assets/croc.png';
+import ahivadh from './assets/ahivadh.png';
+import narasimha from './assets/narasimha.png';
+
 export default class Menu {
     constructor() {
         this.currentModel = '';
@@ -23,7 +28,6 @@ export default class Menu {
         menuItems.forEach(menuItem => {
             menuItem.addEventListener('click', () => {
                 this.currentModel = menuItem.dataset.name;
-                console.log('this.currentModel ', this.currentModel );
                 this.renameTitle();
                 this.showModel();
             });
